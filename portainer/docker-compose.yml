@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    environment:
+      - TZ=Europe/Oslo
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - 9443:9443
+      - 8000:8000
+
+volumes:
+  portainer_data:
