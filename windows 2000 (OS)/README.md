@@ -1,4 +1,4 @@
-# Windows 2000 on dcker
+# Windows 2000 on docker
 
 Can access from:
 
