@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+    hectorm:
+        container_name: qemu-win2000
+        devices:
+            - /dev/kvm
+        ports:
+            - '127.0.0.1:3389:3389/tcp'
+            - '127.0.0.1:5900:5900/tcp'
+            - '127.0.0.1:6080:6080/tcp'
+        image: 'docker.io/hectorm/qemu-win2000:latest'
+
+        environment:
+            - VM_CPU=2
+            - VM_RAM=512M
+            - VM_KEYBOARD=en-us
+            - VM_KVM=true
