@@ -1,17 +1,17 @@
-version: "3.7"
-
-service:
-  openproject:
-    image: openproject/community:latest
-    restart: always
-
-    environment:
-      - OPENPROJECT_HTTPS=false
-
-    volumes:
-      - /var/lib/openproject/pgdata:/var/openproject/pgdata
-
+version: '3.3'
+services:
+  community:
     ports:
-      - 8980:80
-volumes:
-  pgdata:
+      - '8980:80'
+    environment:
+      - OPENPROJECT_SECRET_KEY_BASE=Secret
+      - 'OPENPROJECT_HOST__NAME=yourdomain.com'
+      - OPENPROJECT_HTTPS=true
+    restart: unless-stopped
+    image: 'openproject/community:12'
+    networks:
+      - openproject
+
+
+networks:
+  openproject:
