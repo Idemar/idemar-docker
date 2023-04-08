@@ -1,0 +1,17 @@
+version: "3.7"
+
+service:
+  openproject:
+    image: openproject/community:latest
+    restart: always
+
+    environment:
+      - OPENPROJECT_HTTPS=false
+
+    volumes:
+      - /var/lib/openproject/pgdata:/var/openproject/pgdata
+
+    ports:
+      - 8980:80
+volumes:
+  pgdata:
