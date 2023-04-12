@@ -1,57 +1,45 @@
-version: '3'
+version: '3.9'
 
 services:
-  wp:
-    image: wordpress:latest
-    restart: unless-stopped
-    ports:
-      - 8080:80
+  mysql:
+    image: mysql:8.0
     volumes:
-      - config_data:/usr/local/etc/php/conf.d/conf.ini
-      - wp_app:/var/www/html
-      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - mysql_data:/var/lib/mysql
+    restart: always
     environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_NAME: "wordpress"
-      WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: "My_Password"
-    depends_on:
-      - db
-    links:
-      - db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      -  ./mysql:/var/lib/mysql
 
-  pma:
+  phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    restart: unless-stopped
+    depends_on:
+      - mysql
     environment:
-      PMA_HOST: db
+      PMA_HOST: mysql
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: "My_Password"
-      UPLOAD_LIMIT: 50M
+      PMA_ARBITRARY: 1
+    restart: always
     ports:
-      - 8880:80
-    links:
-      - db:db
+      - 8183:80
 
-  db:
-    image: mysql:latest
-    restart: unless-stopped
+  wordpress:
+    depends_on:
+      - mysql
+    image: wordpress:latest
     ports:
-      - 3306:3306
-    command: [
-        '--default_authentication_plugin=mysql_native_password',
-        '--character-set-server=utf8mb4',
-        '--collation-server=utf8mb4_unicode_ci'
-    ]
-    volumes:
-      - wp_data:/docker-entrypoint-initdb.d
-      - db_data:/var/lib/mysql
+      - "8020:80"
+    restart: always
     environment:
-      MYSQL_DATABASE: "wordpress"
-      MYSQL_ROOT_PASSWORD: "My_Password"
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./wordpress:/var/www/html
 
 volumes:
-  db_data:
-  wp_data:
-  config_data:
-  wp_app:
+  mysql_data: {}
