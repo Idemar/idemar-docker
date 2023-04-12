@@ -5,10 +5,10 @@ services:
     image: wordpress:latest
     restart: unless-stopped
     ports:
-      - 8980:80
+      - 8080:80
     volumes:
-      - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
-      - ./wp-app:/var/www/html
+      - config_data:/usr/local/etc/php/conf.d/conf.ini
+      - wp_app:/var/www/html
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     environment:
       WORDPRESS_DB_HOST: db
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
     environment:
       PMA_HOST: db
-      PMA_PORT: 9306
+      PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: "My_Password"
       UPLOAD_LIMIT: 50M
     ports:
@@ -37,14 +37,14 @@ services:
     image: mysql:latest
     restart: unless-stopped
     ports:
-      - 9306:3306
+      - 3306:3306
     command: [
         '--default_authentication_plugin=mysql_native_password',
         '--character-set-server=utf8mb4',
         '--collation-server=utf8mb4_unicode_ci'
     ]
     volumes:
-      - ./wp-data:/docker-entrypoint-initdb.d
+      - wp_data:/docker-entrypoint-initdb.d
       - db_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: "wordpress"
@@ -52,3 +52,6 @@ services:
 
 volumes:
   db_data:
+  wp_data:
+  config_data:
+  wp_app:
